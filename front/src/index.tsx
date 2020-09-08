@@ -3,8 +3,6 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import Router from './router';
 
-import config from './config';
-
 import './stylesheets/main.css';
 
 const index = (
