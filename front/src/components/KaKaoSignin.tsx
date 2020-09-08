@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import KaKaoLogin from 'react-kakao-login';
 import axios from 'axios';
 interface State {
-	data: any;
+	id: string;
 	nickname: string;
 	email: string;
 	profile_image: string;
@@ -15,7 +15,7 @@ class KaKaoSignin extends Component<any, State> {
 	constructor(props: any) {
 		super(props);
 		this.state = {
-			data: 'kakao',
+			id: '',
 			nickname: '',
 			email: '',
 			profile_image: '',
@@ -26,34 +26,30 @@ class KaKaoSignin extends Component<any, State> {
 
 	responseKaKao = async (res: any) => {
 		this.setState({
-			data: res,
+			id: res.profile.id,
 			nickname: res.profile.kakao_account.profile.nickname,
 			profile_image: res.profile.kakao_account.profile.profile_image_url,
 			email: res.profile.kakao_account.email,
 			age_range: res.profile.kakao_account.age_range,
 			thumbnail_image_url: res.profile.kakao_account.profile.thumbnail_image_url,
 		});
-		console.log('data : ', this.state.data.profile.kakao_account);
 
-		// const semi_email = JSON.stringify(this.state.data.profile.kakao_account.email);
+		// const semi_email = JSON.stringify(this.state.email);
 		// console.log('semi_email : ', semi_email);
 		// //const _email = semi_email.replace(/^"+|"+$/g, '');
-
-		// const semi_age = JSON.stringify(this.state.data.profile.kakao_account.age_range[0]);
-		// const s_age = semi_age.replace(/^"+|"+$/g, '');
-		// const _age = parseInt(s_age);
-		// console.log('age : ', _age);
-
 		// try {
-		// 	alert(JSON.stringify(this.state.data.profile.id));
-		// 	const response = await axios({
-		// 		method: 'get',
-		// 		url: `localhost:8080/api/user_exist/${JSON.stringify(this.state.data.profile.id)}/`,
-		// 		responseType: 'json',
-		// 	});
-		// 	const msg: string = JSON.stringify(response.data.message);
-		// 	if (msg === 'true') {
-		// 		alert('로그인되었습니다');
+		// 	alert(JSON.stringify(this.state.id));
+		const response = await axios({
+			method: 'get',
+			url: `http://localhost:8080/api/auth/${JSON.stringify(this.state.id)}`,
+			responseType: 'json',
+		});
+		const msg: string = JSON.stringify(response.data.success);
+		if (msg === 'true') {
+			alert('로그인되었습니다');
+		} else {
+			alert('회원가입하셔야합니다');
+		}
 		// 	} else {
 		// 		try {
 		// 			const signup_response = await axios({
@@ -92,12 +88,13 @@ class KaKaoSignin extends Component<any, State> {
 				<h4>로그인 후 더 많은 혜택을 누리세요!</h4>
 				<br></br>
 				<KaKaoBtn
-					jsKey={'Javascript Key'}
-					buttonText='Login with Kakao'
+					jsKey={'javascript Key'}
+					buttonText='카카오 계정으로 로그인'
 					onSuccess={this.responseKaKao}
 					onFailure={this.responseFail}
 					getProfile={true}
 				/>
+				<h4>id : {this.state.id}</h4>
 				<h4>Nickname : {this.state.nickname}</h4>
 				<h4>
 					thumbnail_image_url : <img src={this.state.thumbnail_image_url} />
