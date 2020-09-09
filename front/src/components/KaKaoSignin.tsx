@@ -28,17 +28,10 @@ class KaKaoSignin extends Component<any, State> {
 		this.setState({
 			id: res.profile.id,
 			nickname: res.profile.kakao_account.profile.nickname,
-			profile_image: res.profile.kakao_account.profile.profile_image_url,
 			email: res.profile.kakao_account.email,
-			age_range: res.profile.kakao_account.age_range,
 			thumbnail_image_url: res.profile.kakao_account.profile.thumbnail_image_url,
 		});
 
-		// const semi_email = JSON.stringify(this.state.email);
-		// console.log('semi_email : ', semi_email);
-		// //const _email = semi_email.replace(/^"+|"+$/g, '');
-		// try {
-		// 	alert(JSON.stringify(this.state.id));
 		const response = await axios({
 			method: 'get',
 			url: `http://localhost:8080/api/auth/${JSON.stringify(this.state.id)}`,
@@ -48,33 +41,21 @@ class KaKaoSignin extends Component<any, State> {
 		if (msg === 'true') {
 			alert('로그인되었습니다');
 		} else {
-			alert('회원가입하셔야합니다');
+			const config = {
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			};
+			const body = JSON.stringify(this.state);
+
+			try {
+				const res = await axios.post('http://localhost:8080/api/auth', body, config);
+				console.log('result : ', res);
+			} catch (err) {
+				sessionStorage.clear();
+				alert(err);
+			}
 		}
-		// 	} else {
-		// 		try {
-		// 			const signup_response = await axios({
-		// 				method: 'post',
-		// 				url: `localhost:8080/api/user_list/`,
-		// 				data: {
-		// 					password: 1234,
-		// 					email: _email,
-		// 					kakao_id: JSON.stringify(this.state.data.profile.id),
-		// 					nickname: JSON.stringify(this.state.data.profile.properties.nickname),
-		// 					image: JSON.stringify(this.state.data.profile.properties.profile_image),
-		// 					ages: _age,
-		// 				},
-		// 				responseType: 'json',
-		// 			});
-		// 			alert(signup_response);
-		// 		} catch (err) {
-		// 			sessionStorage.clear();
-		// 			alert(err);
-		// 		}
-		// 	}
-		// } catch (err) {
-		// 	sessionStorage.clear();
-		// 	alert(err);
-		// }
 	};
 
 	responseFail = (err: any) => {
@@ -88,7 +69,7 @@ class KaKaoSignin extends Component<any, State> {
 				<h4>로그인 후 더 많은 혜택을 누리세요!</h4>
 				<br></br>
 				<KaKaoBtn
-					jsKey={'javascript Key'}
+					jsKey={'javascriptKey'}
 					buttonText='카카오 계정으로 로그인'
 					onSuccess={this.responseKaKao}
 					onFailure={this.responseFail}
@@ -100,10 +81,6 @@ class KaKaoSignin extends Component<any, State> {
 					thumbnail_image_url : <img src={this.state.thumbnail_image_url} />
 				</h4>
 				<h4> email : {this.state.email}</h4>
-				<h4>age_range : {this.state.age_range}</h4>
-				<h4>
-					profile_image : <img src={this.state.profile_image} />
-				</h4>
 			</Fragment>
 		);
 	}

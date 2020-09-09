@@ -7,6 +7,28 @@ const {
 } = require('../models');
 
 module.exports = {
+  signup: ({
+    id, email, thumbnail_image_url, nickname
+  }) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const user = await User.create({
+          id: id,
+          email: email,
+          name: nickname,
+          profileImage: thumbnail_image_url,
+        });
+        resolve({
+          json: utils.successTrue(sc.SUCCESS, rm.JOIN_SUCCESS, user)
+        });
+      }
+      catch (error) {
+        reject({
+          json: utils.successFalse(sc.INTERNAL_SERVER_ERROR, "로그인실패")
+        });
+      }
+    });
+  },
   read: ({
     id
   }) => {
