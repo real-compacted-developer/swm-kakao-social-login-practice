@@ -10,9 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     profileImage: {
       type: DataTypes.STRING(200),
     },
+    isPremium: {
+      type: DataTypes.BOOLEAN,
+      defaultValues: false,
+      allowNull: false,
+    },
   }, {
     freezeTableName: true,
     paranoid: true,
-
   });
 };
