@@ -10,17 +10,13 @@ module.exports = (sequelize, DataTypes) => {
     profileImage: {
       type: DataTypes.STRING(200),
     },
-    createdAt: {
-      type: 'TIMESTAMP',
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP'),
-      allowNull: false
+    isPremium: {
+      type: DataTypes.BOOLEAN,
+      defaultValues: false,
+      allowNull: false,
     },
-    updatedAt: {
-      type: 'TIMESTAMP',
-      defaultValue: sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'),
-      allowNull: false
-    }
   }, {
     freezeTableName: true,
+    paranoid: true,
   });
 };
