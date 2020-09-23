@@ -7,7 +7,7 @@ class Router extends React.Component {
 		return (
 			<BrowserRouter>
 				<Switch>
-					<Route exact path='/singin' component={KaKaoSignin} />
+					<Route exact path='/signin' component={KaKaoSignin} />
 				</Switch>
 			</BrowserRouter>
 		);
