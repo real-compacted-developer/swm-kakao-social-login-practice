@@ -1,7 +1,7 @@
 const rm = require('../module/util/responseMessage');
 const utils = require('../module/util/utils');
 const sc = require('../module/util/statusCode');
-
+const jwt = require('../module/jwt');
 const {
   User
 } = require('../models');
@@ -42,11 +42,12 @@ module.exports = {
         console.log(user);
         if (user !== null) {
           resolve({
-            json: utils.successTrue(sc.SUCCESS, rm.LOGIN_SUCCESS, true)
+            json: utils.successTrue(sc.SUCCESS, rm.LOGIN_SUCCESS, result)
           });
         }
+        const result = await jwt.sign(user);
         resolve({
-          json: utils.successFalse(sc.SUCCESS, "환영합니다.")
+          json: utils.successFalse(sc.SUCCESS, "환영합니다.",)
         });
 
       } catch (err) {
