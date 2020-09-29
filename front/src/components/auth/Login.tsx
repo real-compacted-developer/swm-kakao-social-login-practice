@@ -1,17 +1,17 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import { login } from '../../actions/auth';
 import KaKaoLogin from 'react-kakao-login';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-class KaKaoSignin extends Component<any> {
-	constructor(props: any) {
-		super(props);
-	}
-
-	responseKaKao = async (res: any) => {
+const Login = ({ login, isAuthenticated }: any) => {
+	const responseKaKao = async (res: any) => {
 		const config = {
 			headers: {
 				'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ class KaKaoSignin extends Component<any> {
 		const body = JSON.stringify(data);
 
 		try {
-			const res = await axios.post('http://localhost:8080/api/auth', body, config);
+			const res = await axios.post('/api/auth', body, config);
 			console.log('res : ', res.data.data.token);
 			const msg: string = JSON.stringify(res.data.success);
 			console.log('success : ', res.data.success);
@@ -42,26 +42,37 @@ class KaKaoSignin extends Component<any> {
 			alert(err);
 		}
 	};
-
-	responseFail = (err: any) => {
+	const responseFail = (err: any) => {
 		alert(err);
 	};
-
-	render() {
-		return (
-			<Fragment>
-				<br></br>
-				<KaKaoBtn
-					jsKey={process.env.REACT_APP_KAKAO_KEY!}
-					buttonText='카카오 계정으로 로그인'
-					onSuccess={this.responseKaKao}
-					onFailure={this.responseFail}
-					getProfile={true}
-				/>
-			</Fragment>
-		);
+	// Redirect if logged in
+	if (isAuthenticated) {
+		return <Redirect to='/' />;
 	}
-}
+	return (
+		<Fragment>
+			<h1 className='large text-primary'>Sign In</h1>
+			<p className='lead'>
+				<i className='fas fa-user'></i> Sign into Your Account
+			</p>
+			<KaKaoBtn
+				jsKey={process.env.REACT_APP_KAKAO_KEY!}
+				buttonText='카카오 계정으로 로그인'
+				onSuccess={responseKaKao}
+				onFailure={responseFail}
+				getProfile={true}
+			/>
+		</Fragment>
+	);
+};
+
+Login.propTypes = {
+	login: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = (state: any) => ({
+	isAuthenticated: state.auth.isAuthenticated,
+});
 
 const KaKaoBtn = styled(KaKaoLogin)`
 	padding: 0;
@@ -80,5 +91,4 @@ const KaKaoBtn = styled(KaKaoLogin)`
 		box-shadow: 0 0px 15px 0 rgba(0, 0, 0, 0.2);
 	}
 `;
-
-export default KaKaoSignin;
+export default connect(mapStateToProps, { login })(Login);
