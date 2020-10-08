@@ -1,28 +1,28 @@
 import React, { Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 import styled from 'styled-components';
-import KaKaoLogin from 'react-kakao-login';
+import GoogleLogin from 'react-google-login';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const KaKaoSignin = () => {
-	const responseKaKao = async (res: any) => {
+const GoogleSignin = () => {
+	const responseGoogle = async (res: any) => {
 		const config = {
 			headers: {
 				'Content-Type': 'application/json',
 			},
 		};
 		const data: Object = {
-			provider: 'kakao',
-			id: res.profile.id.toString(),
-			nickname: res.profile.kakao_account.profile.nickname,
-			email: res.profile.kakao_account.email,
-			profileImage: res.profile.kakao_account.profile.thumbnail_image_url,
+			provider: 'google',
+			id: res.profileObj.googleId,
+			nickname: res.profileObj.name,
+			email: res.profileObj.email,
+			profileImage: res.profileObj.imageUrl,
 			isPremium: false,
 		};
-		const userId = 'kakao' + res.profile.id;
+		const userId = 'google' + res.profileObj.googleId;
 		const user = await axios.get(`http://db.api.connectclass.io/user/${userId}`);
 		const isUser: string = JSON.stringify(user.data.success);
 		if (isUser === 'true') {
@@ -55,28 +55,22 @@ const KaKaoSignin = () => {
 			}
 		}
 	};
-	const responseFail = (err: any) => {
-		alert(err);
-	};
-	// Redirect if logged in
 	if (localStorage.token) {
 		return <Redirect to='/' />;
 	}
-
 	return (
 		<Fragment>
-			<KaKaoBtn
-				jsKey={process.env.REACT_APP_KAKAO_KEY!}
-				buttonText='카카오 계정으로 로그인'
-				onSuccess={responseKaKao}
-				onFailure={responseFail}
-				getProfile={true}
+			<GoogleLogin
+				clientId={process.env.REACT_APP_GOOGLE_KEY!}
+				buttonText='구글 계정으로 로그인'
+				onSuccess={responseGoogle}
+				onFailure={(result) => console.log(result)}
 			/>
 		</Fragment>
 	);
 };
 
-const KaKaoBtn = styled(KaKaoLogin)`
+const GoogleBtn = styled(GoogleLogin)`
 	padding: 0;
 	width: 190px;
 	height: 44px;
@@ -94,4 +88,4 @@ const KaKaoBtn = styled(KaKaoLogin)`
 	}
 `;
 
-export default KaKaoSignin;
+export default GoogleSignin;

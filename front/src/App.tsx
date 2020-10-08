@@ -8,20 +8,15 @@ import Landing from './components/layout/Landing';
 // Redux
 import { Provider } from 'react-redux';
 import store from './store';
-import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
 import './App.css';
 
 if (localStorage.token) {
-	setAuthToken(localStorage.token);
+	setAuthToken(localStorage.getItem('token'));
 }
 
 const App = () => {
-	useEffect(() => {
-		store.dispatch(loadUser());
-	}, []);
-
 	return (
 		<Provider store={store}>
 			<Router>

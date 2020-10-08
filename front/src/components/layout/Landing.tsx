@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 const Landing = (isAuthenticated: any) => {
-	console.log(isAuthenticated);
-	if (isAuthenticated) {
-		return <Redirect to='/main' />;
-	}
+	// if (isAuthenticated) {
+	// 	return <Redirect to='/main' />;
+	// }
 	return (
 		<section className='landing'>
 			<div className='dark-overlay'>
